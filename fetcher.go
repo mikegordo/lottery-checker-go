@@ -52,6 +52,10 @@ func (l *LotteryData) Fetch() {
 
 func (l *LotteryData) convert(dat []map[string]string) {
 	for _, v := range dat {
+		if strings.Compare(v["draw_date"], "2013-10-15T00:00:00") < 0 {
+			/* ignore too old data */
+			continue
+		}
 		mega, _ := strconv.Atoi(v["mega_ball"])
 		n_ := strings.Split(v["winning_numbers"], " ")
 		var numbers [5]int

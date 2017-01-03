@@ -7,14 +7,20 @@ import (
 
 func main() {
 	os.Setenv("TZ", "America/New_York")
-	//l := LotteryData{}
+	l := LotteryData{}
 
 	/* fetch data from remote */
-	//l.Fetch()
+	l.Fetch()
 
 	b := Builder{}
 	b.Initialize()
 	b.Populate()
-	log.Print(b.Numbers)
 
+	r := Frequency{}
+	r.Analyse(l)
+	z := r.CheckSet(b.Numbers)
+
+	log.Println(b.Numbers)
+
+	log.Println(z)
 }
