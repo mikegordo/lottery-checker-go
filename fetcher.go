@@ -11,7 +11,7 @@ import (
 
 type LotteryDay struct {
 	date    string
-	numbers [5]int
+	numbers []int
 	mega    int
 }
 
@@ -58,10 +58,11 @@ func (l *LotteryData) convert(dat []map[string]string) {
 		}
 		mega, _ := strconv.Atoi(v["mega_ball"])
 		n_ := strings.Split(v["winning_numbers"], " ")
-		var numbers [5]int
+		var numbers []int
+		numbers = make([]int, 5)
 		for k, n := range n_ {
 			numbers[k], _ = strconv.Atoi(n)
 		}
-		l.Data = append(l.Data, LotteryDay{date: v["draw_date"], numbers: numbers, mega: mega})
+		l.Data = append(l.Data, LotteryDay{date: v["draw_date"][:10], numbers: numbers, mega: mega})
 	}
 }
