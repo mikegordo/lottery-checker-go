@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 
 	"github.com/fatih/color"
@@ -111,11 +112,118 @@ func main() {
 		fmt.Printf("mega %2d (%.2f)\n", v.Mb, freqRes.Mb[v.Mb])
 		fmt.Printf("dist: %.6f\n", total)
 		fmt.Printf("mega dist %2d (%.2f)\n", v.Mb, normMb)
-
 	}
 
 	fmt.Println("\n== Best Random Sets ==")
 
-	//lastSeq := l.Data[0].numbers
-	built = make([]Numbers, 9999)
+	lastSeq := l.Data[0].numbers
+	builts := make([]Builts, 999999)
+	predefined := make(map[string]Predefined)
+
+	for i := 0; i < 999999; i++ {
+		builder.Populate()
+		bset := builder.Numbers
+		if 0 != arrayDiff(bset.Set, lastSeq) {
+			continue
+		}
+
+		res, resMb, resTotal := dist.CheckSet(bset)
+		if resTotal > 0 {
+			builts[i].Numbers = builder.Numbers
+			builts[i].Total = resTotal
+
+			tmp := Predefined{}
+			tmp.Mb = resMb
+			tmp.Numbers = res
+			tmp.Total = resTotal
+
+			predefined[builder.GetNumbersString()] = tmp
+		}
+	}
+
+	/* sort jobs - and this is not trivial */
+	if len(builts) > 1 {
+		s := make(ASorter, len(builts))
+		i := 0
+		for _, v := range builts {
+			s[i] = Builts{v.Numbers, v.Total}
+			i++
+		}
+
+		sort.Sort(s)
+		builts = s
+	}
+
+	maxcount = 5
+	for _, v := range builts {
+		maxcount--
+		if maxcount < 0 {
+			break
+		}
+		errRng := rng.CheckSet(v.Numbers)
+		if len(errRng) > 0 {
+			fmt.Println("\nrange: fail")
+		} else {
+			fmt.Println("\nrange: pass")
+		}
+
+		err := freq.CheckSet(v.Numbers)
+		if len(err) > 0 {
+			fmt.Println("freg: fail")
+		} else {
+			fmt.Println("freg: pass")
+		}
+
+		normal, normMb, total := dist.CheckSet(v.Numbers)
+
+		for pos, value := range v.Numbers.Set {
+			if inArray(pos, err) {
+				fmt.Printf("%s\t", red(strconv.Itoa(value)))
+			} else {
+				fmt.Printf("%s\t", green(strconv.Itoa(value)))
+			}
+
+			fmt.Printf("%.3f\t", freqRes.Numbers[value][1])
+			fmt.Printf("%.3f\t", freqRes.Numbers[value][2])
+			fmt.Printf("%.3f\t", freqRes.Numbers[value][3])
+			fmt.Printf("%.3f\t", freqRes.Numbers[value][4])
+			fmt.Printf("%.3f\t", freqRes.Numbers[value][5])
+
+			fmt.Printf("D: %.6f\n", normal[pos+1])
+		}
+
+		fmt.Printf("mega %2d (%.2f)\n", v.Numbers.Mb, freqRes.Mb[v.Numbers.Mb])
+		fmt.Printf("dist: %.6f\n", total)
+		fmt.Printf("mega dist %2d (%.2f)\n", v.Numbers.Mb, normMb)
+
+	}
+
+}
+
+type Predefined struct {
+	Numbers [6]float32
+	Mb      float32
+	Total   float32
+}
+
+type Builts struct {
+	Numbers Numbers
+	Total   float32
+}
+
+type ASorter []Builts
+
+func (a ASorter) Len() int           { return len(a) }
+func (a ASorter) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ASorter) Less(i, j int) bool { return a[i].Total > a[j].Total }
+
+func arrayDiff(a []int, b []int) int {
+	result := 0
+	for _, i := range a {
+		if inArray(i, b) {
+			result++
+		}
+	}
+
+	return result
 }
