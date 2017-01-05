@@ -172,7 +172,7 @@ func (r *Distance) CheckSet(n Numbers) ([6]float32, float32, float32) {
 		total *= n
 	}
 
-	total *= normMb
+	total *= normMb * 1000000
 
 	return normal, normMb, total
 }
