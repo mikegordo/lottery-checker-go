@@ -7,21 +7,33 @@ import (
 	"time"
 )
 
+/*
+Numbers - an array of number plus megaball
+*/
 type Numbers struct {
 	Set []int
 	Mb  int
 }
 
+/*
+Builder structure, extends Numbers, includes random generator
+*/
 type Builder struct {
 	Numbers Numbers
 	random  *rand.Rand
 }
 
+/*
+Initialize - creates random generator
+*/
 func (b *Builder) Initialize() {
 	randSource := rand.NewSource(time.Now().UnixNano())
 	b.random = rand.New(randSource)
 }
 
+/*
+Populate structure with a set of random numbers
+*/
 func (b *Builder) Populate() {
 	b.Numbers.Set = make([]int, 5)
 
@@ -37,6 +49,9 @@ func (b *Builder) Populate() {
 	b.Numbers.Mb = b.random.Intn(15) + 1
 }
 
+/*
+GetNumbersString - returns a string of random numbers created in Populate()
+*/
 func (b *Builder) GetNumbersString() string {
 	output := ""
 

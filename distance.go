@@ -1,15 +1,24 @@
 package main
 
+/*
+Distance analyzer - probability of this number appearing on this position in the set
+*/
 type Distance struct {
 	cache  DistanceVal
 	cacheI LotteryData
 }
 
+/*
+DistanceVal - cache ('knowledge base')
+*/
 type DistanceVal struct {
 	Numbers [76][100]float32
 	Mb      [16][100]float32
 }
 
+/*
+Analyse - builds a set of values ('knowledge base') for future analysis
+*/
 func (r *Distance) Analyse(ld LotteryData) DistanceVal {
 	result := DistanceVal{}
 
@@ -79,6 +88,9 @@ func (r *Distance) Analyse(ld LotteryData) DistanceVal {
 	return result
 }
 
+/*
+CheckSet - analyze a single set
+*/
 func (r *Distance) CheckSet(n Numbers) ([6]float32, float32, float32) {
 	var normal [6]float32
 	var normMb float32

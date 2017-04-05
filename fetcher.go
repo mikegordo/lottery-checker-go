@@ -9,16 +9,25 @@ import (
 	"strings"
 )
 
+/*
+LotteryDay - represents a single lottery result
+*/
 type LotteryDay struct {
 	date    string
 	numbers []int
 	mega    int
 }
 
+/*
+LotteryData - all lottery data for all time
+*/
 type LotteryData struct {
 	Data []LotteryDay
 }
 
+/*
+Fetch - returns data from remote
+*/
 func (l *LotteryData) Fetch() {
 	url := "http://data.ny.gov/resource/5xaw-6ayf.json"
 
@@ -50,6 +59,9 @@ func (l *LotteryData) Fetch() {
 	l.convert(dat)
 }
 
+/*
+convert - conterts data to our format
+*/
 func (l *LotteryData) convert(dat []map[string]string) {
 	for _, v := range dat {
 		if strings.Compare(v["draw_date"], "2013-10-15T00:00:00") < 0 {

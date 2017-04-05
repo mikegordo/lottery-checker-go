@@ -1,14 +1,23 @@
 package main
 
+/*
+Frequency analyzer - frequency of this number appearing on this position in the set
+*/
 type Frequency struct {
 	cache FrequencyVal
 }
 
+/*
+FrequencyVal - cache structure
+*/
 type FrequencyVal struct {
 	Numbers [76][6]float32
 	Mb      [16]float32
 }
 
+/*
+Analyse - builds a set of values ('knowledge base') for future analysis
+*/
 func (r *Frequency) Analyse(ld LotteryData) FrequencyVal {
 	result := FrequencyVal{}
 
@@ -38,6 +47,9 @@ func (r *Frequency) Analyse(ld LotteryData) FrequencyVal {
 	return result
 }
 
+/*
+CheckSet - analyze a single set
+*/
 func (r *Frequency) CheckSet(n Numbers) []int {
 	var normal []int
 

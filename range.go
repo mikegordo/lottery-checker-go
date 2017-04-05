@@ -1,14 +1,23 @@
 package main
 
+/*
+Range analyzer - checks if number is on its normal position
+*/
 type Range struct {
 	cache []RangeVal
 }
 
+/*
+RangeVal - single cache value
+*/
 type RangeVal struct {
 	Min int
 	Max int
 }
 
+/*
+Analyse - builds a set of values ('knowledge base') for future analysis
+*/
 func (r *Range) Analyse(ld LotteryData) []RangeVal {
 	result := make([]RangeVal, 6)
 
@@ -36,6 +45,9 @@ func (r *Range) Analyse(ld LotteryData) []RangeVal {
 	return result
 }
 
+/*
+CheckSet - analyze a single set
+*/
 func (r *Range) CheckSet(n Numbers) []int {
 	var normal []int
 
