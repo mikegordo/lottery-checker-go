@@ -6,8 +6,12 @@ import (
 	"sort"
 	"strconv"
 
+	"sync"
+
 	"github.com/fatih/color"
 )
+
+var wg sync.WaitGroup
 
 func main() {
 	os.Setenv("TZ", "America/New_York")
@@ -116,46 +120,37 @@ func main() {
 
 	fmt.Println("\n== Best Random Sets ==")
 
-	lastSeq := l.Data[0].numbers
-	builts := make([]Builts, 999999)
-	predefined := make(map[string]Predefined)
-
-	for i := 0; i < 999999; i++ {
-		builder.Populate()
-		bset := builder.Numbers
-		if 0 != arrayDiff(bset.Set, lastSeq) {
-			continue
-		}
-
-		res, resMb, resTotal := dist.CheckSet(bset)
-		if resTotal > 0 {
-			builts[i].Numbers = builder.Numbers
-			builts[i].Total = resTotal
-
-			tmp := Predefined{}
-			tmp.Mb = resMb
-			tmp.Numbers = res
-			tmp.Total = resTotal
-
-			predefined[builder.GetNumbersString()] = tmp
-		}
-	}
-
-	/* sort jobs - and this is not trivial */
-	if len(builts) > 1 {
-		s := make(ASorter, len(builts))
-		i := 0
-		for _, v := range builts {
-			s[i] = Builts{v.Numbers, v.Total}
-			i++
-		}
-
-		sort.Sort(s)
-		builts = s
-	}
-
+	total := 10000000
+	threads := 20
 	maxcount = 5
-	for _, v := range builts {
+	res := make([]Builts, threads*maxcount)
+	j := 0
+
+	for t := 0; t < threads; t++ {
+		wg.Add(1)
+		go func() {
+			b := brs(l.Data[0].numbers, dist, total/threads)
+			for i := 0; i < maxcount; i++ {
+				res[j] = b[i]
+				j++
+			}
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+
+	s := make(ASorter, len(res))
+	i := 0
+	for _, v := range res {
+		s[i] = Builts{v.Numbers, v.Total}
+		i++
+	}
+
+	sort.Sort(s)
+	res = s
+
+	for _, v := range res {
 		maxcount--
 		if maxcount < 0 {
 			break
@@ -198,6 +193,49 @@ func main() {
 
 	}
 
+}
+
+func brs(lastSeq []int, dist Distance, size int) []Builts {
+	builder := Builder{}
+	builder.Initialize()
+	builts := make([]Builts, size)
+	predefined := make(map[string]Predefined)
+
+	for i := 0; i < size; i++ {
+		builder.Populate()
+		bset := builder.Numbers
+		if 0 != arrayDiff(bset.Set, lastSeq) {
+			continue
+		}
+
+		res, resMb, resTotal := dist.CheckSet(bset)
+		if resTotal > 0 {
+			builts[i].Numbers = builder.Numbers
+			builts[i].Total = resTotal
+
+			tmp := Predefined{}
+			tmp.Mb = resMb
+			tmp.Numbers = res
+			tmp.Total = resTotal
+
+			predefined[builder.GetNumbersString()] = tmp
+		}
+	}
+
+	/* sort jobs - and this is not trivial */
+	if len(builts) > 1 {
+		s := make(ASorter, len(builts))
+		i := 0
+		for _, v := range builts {
+			s[i] = Builts{v.Numbers, v.Total}
+			i++
+		}
+
+		sort.Sort(s)
+		builts = s
+	}
+
+	return builts
 }
 
 type Predefined struct {
