@@ -120,7 +120,7 @@ func main() {
 
 	fmt.Println("\n== Best Random Sets ==")
 
-	total := 10000000
+	total := 1000000
 	threads := 20
 	maxcount = 5
 	res := make([]Builts, threads*maxcount)
@@ -129,7 +129,7 @@ func main() {
 	for t := 0; t < threads; t++ {
 		wg.Add(1)
 		go func() {
-			b := brs(l.Data[0].numbers, dist, total/threads)
+			b := brs(l.Data[0].numbers, l.Data[0].mega, dist, total/threads)
 			for i := 0; i < maxcount; i++ {
 				res[j] = b[i]
 				j++
@@ -195,7 +195,7 @@ func main() {
 
 }
 
-func brs(lastSeq []int, dist Distance, size int) []Builts {
+func brs(lastSeq []int, lastMb int, dist Distance, size int) []Builts {
 	builder := Builder{}
 	builder.Initialize()
 	builts := make([]Builts, size)
@@ -204,7 +204,7 @@ func brs(lastSeq []int, dist Distance, size int) []Builts {
 	for i := 0; i < size; i++ {
 		builder.Populate()
 		bset := builder.Numbers
-		if 0 != arrayDiff(bset.Set, lastSeq) {
+		if 0 != arrayDiff(bset.Set, lastSeq) || bset.Mb == lastMb {
 			continue
 		}
 
