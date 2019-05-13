@@ -64,7 +64,7 @@ convert - conterts data to our format
 */
 func (l *LotteryData) convert(dat []map[string]string) {
 	for _, v := range dat {
-		if strings.Compare(v["draw_date"], "2013-10-15T00:00:00") < 0 {
+		if strings.Compare(v["draw_date"], "2017-10-24T00:00:00") < 0 {
 			/* ignore too old data */
 			continue
 		}

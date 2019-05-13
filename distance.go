@@ -12,8 +12,8 @@ type Distance struct {
 DistanceVal - cache ('knowledge base')
 */
 type DistanceVal struct {
-	Numbers [76][100]float32
-	Mb      [16][100]float32
+	Numbers [71][100]float32
+	Mb      [26][100]float32
 }
 
 /*

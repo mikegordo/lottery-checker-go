@@ -37,7 +37,7 @@ Populate structure with a set of random numbers
 func (b *Builder) Populate() {
 	b.Numbers.Set = make([]int, 5)
 
-	tmp := b.random.Perm(75) // [0, 75)
+	tmp := b.random.Perm(70) // [0, 75)
 	b.Numbers.Set[0] = tmp[0] + 1
 	b.Numbers.Set[1] = tmp[1] + 1
 	b.Numbers.Set[2] = tmp[2] + 1
@@ -46,7 +46,7 @@ func (b *Builder) Populate() {
 
 	sort.Ints(b.Numbers.Set)
 
-	b.Numbers.Mb = b.random.Intn(15) + 1
+	b.Numbers.Mb = b.random.Intn(25) + 1
 }
 
 /*

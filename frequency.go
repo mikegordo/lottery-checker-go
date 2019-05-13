@@ -11,8 +11,8 @@ type Frequency struct {
 FrequencyVal - cache structure
 */
 type FrequencyVal struct {
-	Numbers [76][6]float32
-	Mb      [16]float32
+	Numbers [71][6]float32
+	Mb      [26]float32
 }
 
 /*
