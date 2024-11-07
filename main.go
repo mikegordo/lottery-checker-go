@@ -8,7 +8,6 @@ import (
 
 	"sync"
 
-	"github.com/fatih/color"
 )
 
 var wg sync.WaitGroup
@@ -27,8 +26,8 @@ func main() {
 	freq := Frequency{}
 	freqRes := freq.Analyse(l)
 
-	green := color.New(color.FgGreen).SprintFunc()
-	red := color.New(color.FgRed).SprintFunc()
+	// green := color.New(color.FgGreen).SprintFunc()
+	// red := color.New(color.FgRed).SprintFunc()
 
 	maxcount := 5
 	for _, v := range l.Data {
@@ -49,9 +48,9 @@ func main() {
 
 		for pos, value := range v.numbers {
 			if inArray(pos, err) {
-				fmt.Printf("%s\t", red(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			} else {
-				fmt.Printf("%s\t", green(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			}
 
 			fmt.Printf("%.3f\t", freqRes.Numbers[value][1])
@@ -99,9 +98,9 @@ func main() {
 
 		for pos, value := range v.Set {
 			if inArray(pos, err) {
-				fmt.Printf("%s\t", red(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			} else {
-				fmt.Printf("%s\t", green(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			}
 
 			fmt.Printf("%.3f\t", freqRes.Numbers[value][1])
@@ -120,7 +119,7 @@ func main() {
 
 	fmt.Println("\n== Best Random Sets ==")
 
-	total := 1000000
+	total := 99 * 1000000
 	threads := 20
 	maxcount = 5
 	res := make([]Builts, threads*maxcount)
@@ -173,9 +172,9 @@ func main() {
 
 		for pos, value := range v.Numbers.Set {
 			if inArray(pos, err) {
-				fmt.Printf("%s\t", red(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			} else {
-				fmt.Printf("%s\t", green(strconv.Itoa(value)))
+				fmt.Printf("%s\t", strconv.Itoa(value))
 			}
 
 			fmt.Printf("%.3f\t", freqRes.Numbers[value][1])
